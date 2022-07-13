@@ -11,15 +11,32 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+
+            $table->string('name', 255)
+                ->index()
+                ->comment('Имя пользователя.');
+
+            $table->string('email', 255)
+                ->unique()
+                ->comment('E-Mail пользователя, он же - логин.');
+
+            $table->timestamp('email_verified_at')
+                ->nullable()
+                ->comment('Дата подтверждения адреса E-Mail.');
+
+            $table->string('password')
+                ->comment('Хэш пароля.');
+
+            $table->boolean('is_admin')
+                ->default(false)
+                ->comment('Признак администратора.');
+
             $table->rememberToken();
+
             $table->timestamps();
         });
     }
@@ -29,7 +46,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('users');
     }
